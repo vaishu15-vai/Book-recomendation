@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BookBot</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="chatbox">
+        <h2>📚 Book Recommender</h2>
+        <div id="chatlog"></div>
+        <input type="text" id="userInput" placeholder="Ask me for book recommendations...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const msg = input.value;
+            if (!msg.trim()) return;
+
+            document.getElementById('chatlog').innerHTML += `<div class="user">You: ${msg}</div>`;
+            input.value = '';
+
+            const response = await fetch('/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: msg })
+            });
+            const data = await response.json();
+            document.getElementById('chatlog').innerHTML += `<div class="bot">Bot: ${data.reply}</div>`;
+        }
+    </script>
+</body>
+</html>
